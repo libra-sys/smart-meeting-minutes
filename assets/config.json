@@ -1,0 +1,37 @@
+{
+  "meeting_types": ["项目例会", "管理层会议", "技术评审", "头脑风暴", "客户会议", "其他"],
+  "default_meeting_type": "项目例会",
+  "action_item": {
+    "default_priority": "中",
+    "priorities": ["高", "中", "低"],
+    "unknown_owner_placeholder": "待确认",
+    "unknown_deadline_placeholder": "未定",
+    "max_task_description_length": 100
+  },
+  "output": {
+    "language": "zh-CN",
+    "max_topics": 7,
+    "max_action_items": 20,
+    "max_decisions": 15,
+    "max_conflicts": 5,
+    "include_auto_generated_notice": true,
+    "confirmation_hours": 24
+  },
+  "text_processing": {
+    "max_input_chars": 10000,
+    "remove_filler_words": true,
+    "filler_words": ["那个", "就是说", "嗯", "啊", "呢", "哦", "这个这个"],
+    "merge_duplicate_topics": true
+  },
+  "template": {
+    "path": "references/templates/report-template.md",
+    "date_format": "YYYY-MM-DD",
+    "time_format": "HH:MM"
+  },
+  "validation": {
+    "require_owner_field": true,
+    "require_deadline_field": true,
+    "allow_unknown_owner": true,
+    "allow_unknown_deadline": true
+  }
+}

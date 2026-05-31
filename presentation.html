@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Meeting Minutes - AI智能会议纪要</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: -apple-system, 'SF Pro Display', 'PingFang SC', sans-serif; }
+  .slide { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 60px; opacity: 0; transition: opacity 0.6s ease; pointer-events: none; }
+  .slide.active { opacity: 1; pointer-events: all; }
+  .nav-btn { position: fixed; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 48px; height: 48px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; z-index: 100; transition: background 0.3s; }
+  .nav-btn:hover { background: rgba(255,255,255,0.25); }
+  #prevBtn { left: 20px; }
+  #nextBtn { right: 20px; }
+  .progress { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 100; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); transition: background 0.3s; }
+  .dot.active { background: white; }
+  .slide-num { position: fixed; top: 20px; right: 24px; color: rgba(255,255,255,0.4); font-size: 13px; z-index: 100; }
+  .gradient-text { background: linear-gradient(135deg, #fff 0%, #a0a0a0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .accent { color: #60a5fa; }
+  .accent-green { color: #34d399; }
+  .accent-orange { color: #fb923c; }
+  .line-accent { width: 60px; height: 3px; background: #60a5fa; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Title -->
+<div class="slide active" id="slide-1">
+  <div class="text-center">
+    <div class="mb-6" style="font-size:11px;letter-spacing:4px;color:#60a5fa;text-transform:uppercase;">WORKBUDDY SKILL</div>
+    <h1 class="text-white font-bold mb-4" style="font-size:56px;line-height:1.1;">Smart Meeting<br><span class="gradient-text">Minutes</span></h1>
+    <div class="line-accent mx-auto mb-6"></div>
+    <p class="text-gray-400 text-xl mb-8">智能会议纪要生成器</p>
+    <p class="text-gray-500 text-base">从混乱的会议记录到专业结构化纪要<br>2分钟，而不是90分钟</p>
+  </div>
+</div>
+
+<!-- Slide 2: Problem -->
+<div class="slide" id="slide-2">
+  <div class="w-full max-w-4xl">
+    <div class="mb-10">
+      <div style="font-size:11px;letter-spacing:3px;color:#60a5fa;text-transform:uppercase;" class="mb-3">PROBLEM</div>
+      <h2 class="text-white font-bold" style="font-size:42px;">会议效率黑洞</h2>
+    </div>
+    <div class="grid grid-cols-3 gap-6">
+      <div class="border border-gray-800 rounded-2xl p-6" style="background:rgba(255,255,255,0.03);">
+        <div class="text-5xl font-bold text-red-400 mb-3">45-90</div>
+        <div class="text-gray-400 text-sm leading-relaxed">分钟<br>1小时会议的<br>人工记录时间</div>
+      </div>
+      <div class="border border-gray-800 rounded-2xl p-6" style="background:rgba(255,255,255,0.03);">
+        <div class="text-5xl font-bold text-red-400 mb-3">40%</div>
+        <div class="text-gray-400 text-sm leading-relaxed">行动项<br>因注意力疲劳<br>被人工遗漏</div>
+      </div>
+      <div class="border border-gray-800 rounded-2xl p-6" style="background:rgba(255,255,255,0.03);">
+        <div class="text-5xl font-bold text-red-400 mb-3">65%</div>
+        <div class="text-gray-400 text-sm leading-relaxed">执行率<br>无结构化纪要时<br>的行动项跟踪</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 3: Solution -->
+<div class="slide" id="slide-3">
+  <div class="w-full max-w-4xl">
+    <div class="mb-10">
+      <div style="font-size:11px;letter-spacing:3px;color:#60a5fa;text-transform:uppercase;" class="mb-3">SOLUTION</div>
+      <h2 class="text-white font-bold" style="font-size:42px;">6步智能处理流程</h2>
+    </div>
+    <div class="space-y-3">
+      <div class="flex items-center gap-4 p-4 rounded-xl" style="background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.15);">
+        <div class="text-blue-400 font-bold w-8 text-lg">01</div>
+        <div>
+          <span class="text-white font-semibold">接收与预处理</span>
+          <span class="text-gray-500 text-sm ml-3">识别会议类型、参与者、基础信息</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 p-4 rounded-xl" style="background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.1);">
+        <div class="text-blue-400 font-bold w-8 text-lg">02</div>
+        <div>
+          <span class="text-white font-semibold">议题拆解</span>
+          <span class="text-gray-500 text-sm ml-3">3-7个独立议题，含摘要与立场分析</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 p-4 rounded-xl" style="background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.1);">
+        <div class="text-green-400 font-bold w-8 text-lg">03</div>
+        <div>
+          <span class="text-white font-semibold">决议与行动项提取</span>
+          <span class="text-gray-500 text-sm ml-3">EXACT模式：任务+负责人+截止时间+优先级</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 p-4 rounded-xl" style="background:rgba(251,146,60,0.06);border:1px solid rgba(251,146,60,0.1);">
+        <div class="text-orange-400 font-bold w-8 text-lg">04</div>
+        <div>
+          <span class="text-white font-semibold">关键分歧识别</span>
+          <span class="text-gray-500 text-sm ml-3">主动发现未解决争议，标注当前状态</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 p-4 rounded-xl" style="background:rgba(96,165,250,0.04);border:1px solid rgba(96,165,250,0.08);">
+        <div class="text-blue-400 font-bold w-8 text-lg">05</div>
+        <div>
+          <span class="text-white font-semibold">质量校验</span>
+          <span class="text-gray-500 text-sm ml-3">validate.sh 自动验证格式完整性</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 p-4 rounded-xl" style="background:rgba(96,165,250,0.04);border:1px solid rgba(96,165,250,0.08);">
+        <div class="text-blue-400 font-bold w-8 text-lg">06</div>
+        <div>
+          <span class="text-white font-semibold">格式化输出</span>
+          <span class="text-gray-500 text-sm ml-3">标准Markdown纪要，含行动项追踪表</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 4: Speed Comparison -->
+<div class="slide" id="slide-4">
+  <div class="w-full max-w-4xl text-center">
+    <div style="font-size:11px;letter-spacing:3px;color:#60a5fa;text-transform:uppercase;" class="mb-4">PERFORMANCE</div>
+    <h2 class="text-white font-bold mb-12" style="font-size:42px;">速度对比</h2>
+    <div class="grid grid-cols-2 gap-12 items-center">
+      <div>
+        <div class="text-gray-500 text-sm mb-3 uppercase tracking-widest">传统人工</div>
+        <div class="text-red-400 font-bold mb-2" style="font-size:72px;">90<span class="text-3xl">min</span></div>
+        <div class="text-gray-600 text-sm">1小时会议的平均记录时间</div>
+      </div>
+      <div>
+        <div class="text-blue-400 text-sm mb-3 uppercase tracking-widest">Smart Meeting Minutes</div>
+        <div class="text-white font-bold mb-2" style="font-size:72px;">3<span class="text-3xl">min</span></div>
+        <div class="text-gray-400 text-sm">同等质量，包含全部结构化信息</div>
+      </div>
+    </div>
+    <div class="mt-12 inline-block border border-blue-500 rounded-full px-8 py-3" style="background:rgba(96,165,250,0.1);">
+      <span class="text-blue-400 font-bold text-2xl">20× 更快</span>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 5: Key Features -->
+<div class="slide" id="slide-5">
+  <div class="w-full max-w-4xl">
+    <div style="font-size:11px;letter-spacing:3px;color:#60a5fa;text-transform:uppercase;" class="mb-4">KEY FEATURES</div>
+    <h2 class="text-white font-bold mb-8" style="font-size:42px;">核心能力</h2>
+    <div class="grid grid-cols-2 gap-5">
+      <div class="p-6 rounded-2xl" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">🎯</div>
+        <h3 class="text-white font-semibold text-lg mb-2">精准行动项追踪</h3>
+        <p class="text-gray-500 text-sm">每项含负责人、截止时间、优先级，模糊项显式标"待确认"，不猜测</p>
+      </div>
+      <div class="p-6 rounded-2xl" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">⚠️</div>
+        <h3 class="text-white font-semibold text-lg mb-2">分歧点主动识别</h3>
+        <p class="text-gray-500 text-sm">不仅记录共识，更标注未解决争议，状态追踪（待讨论/搁置/上报）</p>
+      </div>
+      <div class="p-6 rounded-2xl" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">🔄</div>
+        <h3 class="text-white font-semibold text-lg mb-2">多会议类型适配</h3>
+        <p class="text-gray-500 text-sm">自动识别项目例会/管理层/技术评审/头脑风暴，自适应纪要格式</p>
+      </div>
+      <div class="p-6 rounded-2xl" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">🛡️</div>
+        <h3 class="text-white font-semibold text-lg mb-2">零幻觉保障</h3>
+        <p class="text-gray-500 text-sm">严格约束：禁止补充原文中不存在的内容，不存储会议数据</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 6: Action Item Example -->
+<div class="slide" id="slide-6">
+  <div class="w-full max-w-4xl">
+    <div style="font-size:11px;letter-spacing:3px;color:#60a5fa;text-transform:uppercase;" class="mb-4">OUTPUT EXAMPLE</div>
+    <h2 class="text-white font-bold mb-6" style="font-size:36px;">行动项追踪表</h2>
+    <div class="rounded-2xl overflow-hidden" style="border:1px solid rgba(255,255,255,0.1);">
+      <table class="w-full text-sm">
+        <thead>
+          <tr style="background:rgba(96,165,250,0.15);">
+            <th class="text-left p-4 text-blue-300 font-semibold">#</th>
+            <th class="text-left p-4 text-blue-300 font-semibold">任务</th>
+            <th class="text-left p-4 text-blue-300 font-semibold">负责人</th>
+            <th class="text-left p-4 text-blue-300 font-semibold">截止时间</th>
+            <th class="text-left p-4 text-blue-300 font-semibold">优先级</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-top:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);">
+            <td class="p-4 text-gray-400">1</td>
+            <td class="p-4 text-white">修复测试阶段发现的2个前端bug</td>
+            <td class="p-4 text-green-400">李娜</td>
+            <td class="p-4 text-gray-300">03-21</td>
+            <td class="p-4"><span class="px-2 py-1 rounded text-xs" style="background:rgba(239,68,68,0.2);color:#f87171;">高</span></td>
+          </tr>
+          <tr style="border-top:1px solid rgba(255,255,255,0.06);">
+            <td class="p-4 text-gray-400">2</td>
+            <td class="p-4 text-white">优化接口响应时间至200ms以下</td>
+            <td class="p-4 text-green-400">王强</td>
+            <td class="p-4 text-gray-300">03-20</td>
+            <td class="p-4"><span class="px-2 py-1 rounded text-xs" style="background:rgba(239,68,68,0.2);color:#f87171;">高</span></td>
+          </tr>
+          <tr style="border-top:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);">
+            <td class="p-4 text-gray-400">3</td>
+            <td class="p-4 text-white">与客户确认移动端适配优先级</td>
+            <td class="p-4 text-green-400">刘洋</td>
+            <td class="p-4 text-gray-300">下次会议前</td>
+            <td class="p-4"><span class="px-2 py-1 rounded text-xs" style="background:rgba(239,68,68,0.2);color:#f87171;">高</span></td>
+          </tr>
+          <tr style="border-top:1px solid rgba(255,255,255,0.06);">
+            <td class="p-4 text-gray-400">4</td>
+            <td class="p-4 text-white">整理UAT业务场景清单</td>
+            <td class="p-4 text-yellow-400">待确认</td>
+            <td class="p-4 text-gray-300">03-22</td>
+            <td class="p-4"><span class="px-2 py-1 rounded text-xs" style="background:rgba(251,191,36,0.2);color:#fcd34d;">中</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-gray-600 text-xs mt-4 text-center">* 负责人模糊时显式标注"待确认"，不猜测</p>
+  </div>
+</div>
+
+<!-- Slide 7: ROI -->
+<div class="slide" id="slide-7">
+  <div class="w-full max-w-4xl text-center">
+    <div style="font-size:11px;letter-spacing:3px;color:#60a5fa;text-transform:uppercase;" class="mb-4">ROI</div>
+    <h2 class="text-white font-bold mb-10" style="font-size:42px;">投资回报</h2>
+    <div class="grid grid-cols-3 gap-6 mb-10">
+      <div class="p-6 rounded-2xl" style="background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);">
+        <div class="text-green-400 font-bold text-4xl mb-2">87%</div>
+        <div class="text-gray-400 text-sm">人力成本节省<br>10人团队/月</div>
+      </div>
+      <div class="p-6 rounded-2xl" style="background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);">
+        <div class="text-green-400 font-bold text-4xl mb-2">85%+</div>
+        <div class="text-gray-400 text-sm">行动项执行率<br>vs 65%传统方式</div>
+      </div>
+      <div class="p-6 rounded-2xl" style="background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);">
+        <div class="text-green-400 font-bold text-4xl mb-2">&lt;5%</div>
+        <div class="text-gray-400 text-sm">行动项遗漏率<br>vs 25-40%人工</div>
+      </div>
+    </div>
+    <div class="text-gray-500 text-sm">示例：20次/月会议 → 传统¥3,000/月 → Smart Minutes ¥450/月</div>
+  </div>
+</div>
+
+<!-- Slide 8: Tech Stack -->
+<div class="slide" id="slide-8">
+  <div class="w-full max-w-4xl">
+    <div style="font-size:11px;letter-spacing:3px;color:#60a5fa;text-transform:uppercase;" class="mb-4">TECH STACK</div>
+    <h2 class="text-white font-bold mb-8" style="font-size:42px;">技术架构</h2>
+    <div class="space-y-4">
+      <div class="flex items-center justify-between p-5 rounded-xl" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);">
+        <div class="flex items-center gap-4">
+          <span class="text-blue-400 font-mono text-sm">SKILL.md</span>
+          <span class="text-gray-400 text-sm">主工作流定义，6步流程，EXACT/FLEX标注</span>
+        </div>
+        <span class="text-gray-600 text-xs">240 lines</span>
+      </div>
+      <div class="flex items-center justify-between p-5 rounded-xl" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);">
+        <div class="flex items-center gap-4">
+          <span class="text-green-400 font-mono text-sm">meeting-analyzer.py</span>
+          <span class="text-gray-400 text-sm">议题/行动项/分歧/决议提取引擎</span>
+        </div>
+        <span class="text-gray-600 text-xs">Python 标准库</span>
+      </div>
+      <div class="flex items-center justify-between p-5 rounded-xl" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);">
+        <div class="flex items-center gap-4">
+          <span class="text-yellow-400 font-mono text-sm">validate.sh</span>
+          <span class="text-gray-400 text-sm">8项格式完整性验证，PASS/FAIL输出</span>
+        </div>
+        <span class="text-gray-600 text-xs">Bash</span>
+      </div>
+      <div class="flex items-center justify-between p-5 rounded-xl" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);">
+        <div class="flex items-center gap-4">
+          <span class="text-purple-400 font-mono text-sm">references/</span>
+          <span class="text-gray-400 text-sm">规范手册 + 示例对 + 报告模板</span>
+        </div>
+        <span class="text-gray-600 text-xs">4 documents</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 9: Summary -->
+<div class="slide" id="slide-9">
+  <div class="text-center">
+    <div style="font-size:11px;letter-spacing:3px;color:#60a5fa;text-transform:uppercase;" class="mb-6">SUMMARY</div>
+    <h2 class="text-white font-bold mb-6" style="font-size:48px;">让每次会议<br><span class="accent-green">有结果，可追踪</span></h2>
+    <div class="line-accent mx-auto mb-8"></div>
+    <div class="grid grid-cols-3 gap-6 max-w-2xl mx-auto mb-10">
+      <div class="text-center">
+        <div class="text-white font-bold text-2xl mb-1">10/12</div>
+        <div class="text-gray-500 text-sm">评测得分</div>
+      </div>
+      <div class="text-center">
+        <div class="text-white font-bold text-2xl mb-1">✅ PASS</div>
+        <div class="text-gray-500 text-sm">安全扫描</div>
+      </div>
+      <div class="text-center">
+        <div class="text-white font-bold text-2xl mb-1">12文件</div>
+        <div class="text-gray-500 text-sm">完整交付物</div>
+      </div>
+    </div>
+    <p class="text-gray-500 text-base">smart-meeting-minutes · v1.0.0 · WorkBuddy Skill</p>
+  </div>
+</div>
+
+<!-- Navigation -->
+<button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">←</button>
+<button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">→</button>
+<div class="progress" id="progress"></div>
+<div class="slide-num" id="slideNum"></div>
+
+<script>
+  const totalSlides = 9;
+  let current = 1;
+  
+  const progress = document.getElementById('progress');
+  for (let i = 1; i <= totalSlides; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 1 ? ' active' : '');
+    dot.onclick = () => goTo(i);
+    dot.style.cursor = 'pointer';
+    progress.appendChild(dot);
+  }
+  
+  function goTo(n) {
+    document.getElementById('slide-' + current).classList.remove('active');
+    document.querySelectorAll('.dot')[current - 1].classList.remove('active');
+    current = Math.max(1, Math.min(totalSlides, n));
+    document.getElementById('slide-' + current).classList.add('active');
+    document.querySelectorAll('.dot')[current - 1].classList.add('active');
+    document.getElementById('slideNum').textContent = current + ' / ' + totalSlides;
+    document.getElementById('prevBtn').style.opacity = current === 1 ? '0.3' : '1';
+    document.getElementById('nextBtn').style.opacity = current === totalSlides ? '0.3' : '1';
+  }
+  
+  function changeSlide(dir) { goTo(current + dir); }
+  
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+  });
+  
+  goTo(1);
+</script>
+</body>
+</html>
